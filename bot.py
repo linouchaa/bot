@@ -1,22 +1,17 @@
 from datetime import datetime
 from urllib.parse import urljoin  # Ajout de l'import pour construire les URLs complètes
 
+import os
 import discord
 import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands, tasks
 
-# --- LIRE LE TOKEN DEPUIS token.txt ---
-try:
-    import os
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-except FileNotFoundError:
-    print("Erreur : fichier token.txt non trouvé.")
-    BOT_TOKEN = None
-
 if not BOT_TOKEN:
-    print("Erreur : le token Discord est vide dans token.txt.")
+    print("Erreur : le token Discord est manquant (variable d'environnement BOT_TOKEN).")
     exit(1)
+
 
 intents = discord.Intents.default()
 intents.message_content = True
