@@ -1,4 +1,6 @@
+
 import os
+print("Liste des fichiers dans /app :", os.listdir("."))
 import asyncio
 from datetime import datetime
 from urllib.parse import urljoin
