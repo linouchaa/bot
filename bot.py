@@ -37,7 +37,7 @@ async def start(ctx: commands.context.Context, arg: str = None) -> None:
         await ctx.channel.send(embed=embed)
         return
 
-    task = tasks.loop(minutes=1)(scrap)
+    task = tasks.loop(seconds=20)(scrap)
     task.start(ctx, arg)
     started_tasks[ctx.author.id] = task
     prev_results[ctx.author.id] = set()
