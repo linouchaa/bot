@@ -1,2 +1,2 @@
 #!/bin/sh
-python botg.py
+python bot.py
