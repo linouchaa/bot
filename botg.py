@@ -1,6 +1,6 @@
-
 import os
-print("Liste des fichiers dans /app :", os.listdir("."))
+print("Répertoire courant :", os.getcwd())
+print("Liste des fichiers dans /app :", os.listdir("/app"))
 import asyncio
 from datetime import datetime
 from urllib.parse import urljoin

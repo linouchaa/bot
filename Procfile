@@ -1,1 +1,1 @@
-web: python bot.py
+start: python botg.py
