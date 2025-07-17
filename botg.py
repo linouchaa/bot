@@ -43,7 +43,7 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
                 message = "\n".join(f"- {r}" for r in sorted(results))
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"📋 *Résultats à {now}*\n{message}",
+                    text=f"📋 *Résultats à {now}* – {len(results)} logement(s)\n{message}",
                     parse_mode="Markdown",
                     disable_notification=False
                 )
