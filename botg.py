@@ -54,7 +54,7 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
         except Exception as e:
             print(f"Erreur lors du scraping : {e}")
 
-        await asyncio.sleep(10)  # Attente de 10 secondes
+        await asyncio.sleep(3)  # Attente de 10 secondes
 
 # Commande /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
