@@ -18,6 +18,7 @@ print("Token:", BOT_TOKEN)
 
 # Tâches en cours par utilisateur
 tasks = {}
+group_chat_id = None
 
 # Fonction de scraping
 async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
@@ -82,12 +83,21 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⛔ Surveillance arrêtée.")
     else:
         await update.message.reply_text("⚠️ Aucun processus de surveillance actif.")
+        
+ async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global group_chat_id  # On dit qu’on va modifier la variable globale
+    chat = update.effective_chat
+    group_chat_id = chat.id  # On sauvegarde l’ID du groupe dans la variable globale
+    await update.message.reply_text(f"ID du groupe enregistré : {group_chat_id}")
+
 
 # Lancer le bot
 if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("stop", stop))
+    app.add_handler(CommandHandler("groupid", groupid))
+
 
     print("🚀 Bot Telegram lancé.")
     app.run_polling()
