@@ -87,9 +87,9 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("stop", stop))
-        app.add_handler(CommandHandler("groupid", groupid))
-
+    app.add_handler(CommandHandler("groupid", groupid))
 
     print("🚀 Bot Telegram lancé.")
     app.run_polling()
+
 
