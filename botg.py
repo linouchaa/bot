@@ -73,9 +73,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Surveillance démarrée. Tu recevras les résultats régulièrement.")
 
 # Commande /stop
-async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat = update.effective_chat
-    await update.message.reply_text(f"L'ID de ce groupe est : {chat.id}")
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -91,7 +88,6 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("stop", stop))
-    app.add_handler(CommandHandler("groupid", groupid))
 
     print("🚀 Bot Telegram lancé.")
     app.run_polling()
