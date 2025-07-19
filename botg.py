@@ -58,6 +58,7 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
 
 # Commande /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print("Ton ID perso :", update.effective_user.id)
     user_id = update.effective_user.id
     if user_id in tasks:
         await update.message.reply_text("🔁 Surveillance déjà en cours.")
