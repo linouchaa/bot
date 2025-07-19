@@ -73,6 +73,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Surveillance démarrée. Tu recevras les résultats régulièrement.")
 
 # Commande /stop
+async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat = update.effective_chat
+    await update.message.reply_text(f"L'ID de ce groupe est : {chat.id}")
+
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id in tasks:
