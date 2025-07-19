@@ -90,3 +90,6 @@ if __name__ == "__main__":
 
     print("🚀 Bot Telegram lancé.")
     app.run_polling()
+    async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat = update.effective_chat
+    await update.message.reply_text(f"L'ID de ce groupe est : {chat.id}")
