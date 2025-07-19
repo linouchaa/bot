@@ -74,7 +74,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Surveillance démarrée. Tu recevras les résultats régulièrement.")
 
 # Commande /stop
-
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id in tasks:
@@ -83,13 +82,13 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⛔ Surveillance arrêtée.")
     else:
         await update.message.reply_text("⚠️ Aucun processus de surveillance actif.")
-        
- async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+# Commande /groupid
+async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global group_chat_id  # On dit qu’on va modifier la variable globale
     chat = update.effective_chat
     group_chat_id = chat.id  # On sauvegarde l’ID du groupe dans la variable globale
     await update.message.reply_text(f"ID du groupe enregistré : {group_chat_id}")
-
 
 # Lancer le bot
 if __name__ == "__main__":
