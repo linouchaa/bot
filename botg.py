@@ -22,6 +22,8 @@ group_chat_id = None
 
 # Fonction de scraping
 async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
+    global group_chat_id  # Pour utiliser la variable globale
+
     while True:
         try:
             now = datetime.now().strftime("%H:%M")
@@ -42,12 +44,24 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
 
             if results:
                 message = "\n".join(f"- {r}" for r in sorted(results))
+
+                # Envoi à l'utilisateur qui a lancé la surveillance
                 await context.bot.send_message(
                     chat_id=user_id,
                     text=f"📋 *Résultats à {now}* – {len(results)} logement(s)\n{message}",
                     parse_mode="Markdown",
                     disable_notification=False
                 )
+
+                # Envoi automatique au groupe si ID connu
+                if group_chat_id:
+                    await context.bot.send_message(
+                        chat_id=group_chat_id,
+                        text=f"📋 *Résultats à {now}* – {len(results)} logement(s)\n{message}",
+                        parse_mode="Markdown",
+                        disable_notification=False
+                    )
+
                 print(f"[{now}] {len(results)} logements envoyés.")
             else:
                 print(f"[{now}] Aucun résultat trouvé.")
@@ -55,7 +69,7 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
         except Exception as e:
             print(f"Erreur lors du scraping : {e}")
 
-        await asyncio.sleep(3)  # Attente de 10 secondes
+        await asyncio.sleep(3)  # Attente de 3 secondes
 
 # Commande /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
