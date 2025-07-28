@@ -14,6 +14,9 @@ print("Liste des fichiers dans /app :", os.listdir("/app"))
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 print("Token:", BOT_TOKEN)
 
+# Remplace par l'ID de ton groupe Telegram (format : -100xxxxxxxxxx)
+GROUP_ID = -1002642449280
+
 tasks = {}
 
 async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
@@ -37,13 +40,22 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
 
             if results:
                 message = "\n".join(f"- {r}" for r in sorted(results))
-                await context.bot.send_message(
+                # Envoi dans la conversation privée
+                sent_message = await context.bot.send_message(
                     chat_id=user_id,
                     text=f"📋 *Résultats à {now}* – {len(results)} logement(s)\n{message}",
                     parse_mode="Markdown",
                     disable_notification=False
                 )
-                print(f"[{now}] {len(results)} logements envoyés.")
+                print(f"[{now}] {len(results)} logements envoyés à l'utilisateur.")
+
+                # Transfert dans le groupe
+                await context.bot.forward_message(
+                    chat_id=GROUP_ID,
+                    from_chat_id=user_id,
+                    message_id=sent_message.message_id
+                )
+                print(f"[{now}] Message transféré dans le groupe.")
             else:
                 print(f"[{now}] Aucun résultat trouvé.")
 
@@ -66,7 +78,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = context.args[0]
     task = asyncio.create_task(scrap(user_id, context, url))
     tasks[user_id] = task
-    await update.message.reply_text("✅ Surveillance démarrée. Tu recevras les résultats régulièrement.")
+    await update.message.reply_text(
+        "✅ Surveillance démarrée. Tu recevras les résultats et ils seront transférés dans le groupe."
+    )
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
