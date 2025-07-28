@@ -106,13 +106,19 @@ async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Lancer le bot
 if __name__ == "__main__":
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("stop", stop))
-    app.add_handler(CommandHandler("groupid", groupid))
+    async def main():
+        app = ApplicationBuilder().token(BOT_TOKEN).build()
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("stop", stop))
+        app.add_handler(CommandHandler("groupid", groupid))
 
+        # ✅ Supprimer le webhook avant de démarrer le polling
+        await app.bot.delete_webhook(drop_pending_updates=True)
 
-    print("🚀 Bot Telegram lancé.")
-    app.run_polling()
+        print("🚀 Bot Telegram lancé en mode polling.")
+        await app.run_polling()
+
+    asyncio.run(main())
+
 
 
