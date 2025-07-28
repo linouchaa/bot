@@ -21,8 +21,8 @@ tasks = {}
 
 # Fonction de scraping
 async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
-    while True:
-        try:
+    try:
+        while True:
             now = datetime.now().strftime("%H:%M")
             response = requests.get(url)
             soup = BeautifulSoup(response.text, "html.parser")
@@ -51,10 +51,11 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
             else:
                 print(f"[{now}] Aucun résultat trouvé.")
 
-        except Exception as e:
-            print(f"Erreur lors du scraping : {e}")
-
-        await asyncio.sleep(3)  # Attente de 10 secondes
+            await asyncio.sleep(3)  # Pause de 3 secondes entre chaque scraping
+    except asyncio.CancelledError:
+        print(f"Surveillance annulée pour user {user_id}.")
+    except Exception as e:
+        print(f"Erreur lors du scraping : {e}")
 
 # Commande /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -75,18 +76,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Commande /stop
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    if user_id in tasks:
-        tasks[user_id].cancel()
+    task = tasks.get(user_id)
+    if task:
+        task.cancel()
         del tasks[user_id]
         await update.message.reply_text("⛔ Surveillance arrêtée.")
     else:
         await update.message.reply_text("⚠️ Aucun processus de surveillance actif.")
 
-# Lancer le bot
 if __name__ == "__main__":
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("stop", stop))
+    async def main():
+        app = ApplicationBuilder().token(BOT_TOKEN).build()
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("stop", stop))
 
-    print("🚀 Bot Telegram lancé.")
-    app.run_polling()
+        print("🚀 Bot Telegram lancé.")
+        await app.run_polling()
+
+    asyncio.run(main())
