@@ -8,18 +8,14 @@ from bs4 import BeautifulSoup
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# Affichage du répertoire et des fichiers (utile pour Railway)
 print("Répertoire courant :", os.getcwd())
 print("Liste des fichiers dans /app :", os.listdir("/app"))
 
-# Récupération du token Telegram
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 print("Token:", BOT_TOKEN)
 
-# Tâches en cours par utilisateur
 tasks = {}
 
-# Fonction de scraping
 async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
     try:
         while True:
@@ -51,13 +47,12 @@ async def scrap(user_id: int, context: ContextTypes.DEFAULT_TYPE, url: str):
             else:
                 print(f"[{now}] Aucun résultat trouvé.")
 
-            await asyncio.sleep(3)  # Pause de 3 secondes entre chaque scraping
+            await asyncio.sleep(3)
     except asyncio.CancelledError:
         print(f"Surveillance annulée pour user {user_id}.")
     except Exception as e:
         print(f"Erreur lors du scraping : {e}")
 
-# Commande /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id in tasks:
@@ -73,7 +68,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tasks[user_id] = task
     await update.message.reply_text("✅ Surveillance démarrée. Tu recevras les résultats régulièrement.")
 
-# Commande /stop
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     task = tasks.get(user_id)
@@ -85,12 +79,9 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ Aucun processus de surveillance actif.")
 
 if __name__ == "__main__":
-    async def main():
-        app = ApplicationBuilder().token(BOT_TOKEN).build()
-        app.add_handler(CommandHandler("start", start))
-        app.add_handler(CommandHandler("stop", stop))
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("stop", stop))
 
-        print("🚀 Bot Telegram lancé.")
-        await app.run_polling()
-
-    asyncio.run(main())
+    print("🚀 Bot Telegram lancé.")
+    app.run_polling()
