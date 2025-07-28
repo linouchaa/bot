@@ -104,21 +104,20 @@ async def groupid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     group_chat_id = chat.id  # On sauvegarde l’ID du groupe dans la variable globale
     await update.message.reply_text(f"ID du groupe enregistré : {group_chat_id}")
 
+# Handler pour supprimer le webhook au démarrage
+async def on_startup(app):
+    await app.bot.delete_webhook(drop_pending_updates=True)
+    print("Webhook supprimé au démarrage.")
+
 # Lancer le bot
 if __name__ == "__main__":
-    async def main():
-        app = ApplicationBuilder().token(BOT_TOKEN).build()
-        app.add_handler(CommandHandler("start", start))
-        app.add_handler(CommandHandler("stop", stop))
-        app.add_handler(CommandHandler("groupid", groupid))
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-        # ✅ Supprimer le webhook avant de démarrer le polling
-        await app.bot.delete_webhook(drop_pending_updates=True)
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("stop", stop))
+    app.add_handler(CommandHandler("groupid", groupid))
 
-        print("🚀 Bot Telegram lancé en mode polling.")
-        await app.run_polling()
+    app.post_init = on_startup  # Appelle la suppression webhook au démarrage
 
-    asyncio.run(main())
-
-
-
+    print("🚀 Bot Telegram lancé en mode polling.")
+    app.run_polling()
